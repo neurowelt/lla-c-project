@@ -35,9 +35,9 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) 
 
     // Pack back to network endian
     dbhdr->magic = htonl(dbhdr->magic);
-    dbhdr->version = htons(dbhdr->version);
     dbhdr->filesize = htonl(sizeof(struct dbheader_t) + (sizeof(struct employee_t) * realcount));
     dbhdr->count = htons(dbhdr->count);
+    dbhdr->version = htons(dbhdr->version);
 
     // Bring cursor to the beginning of the file for proper closing
     lseek(fd, 0, SEEK_SET);
@@ -115,7 +115,11 @@ int create_db_header(struct dbheader_t **headerOut) {
     header->magic = HEADER_MAGIC;
     header->filesize = sizeof(struct dbheader_t);
 
-    *headerOut = header;
+    if (headerOut) {
+        *headerOut = header;
+    } else {
+        free(header);
+    }
 
     return STATUS_SUCCESS;
 }
