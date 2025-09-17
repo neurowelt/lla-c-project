@@ -102,6 +102,11 @@ int validate_db_header(int fd, struct dbheader_t **headerOut) {
 }
 
 int create_db_header(struct dbheader_t **headerOut) {
+    if (headerOut == NULL) {
+        printf("Will not create header for null pointer\n");
+        return STATUS_ERROR;
+    }
+
     // Ask the heap to allocate memory space for this structure
     // and return the pointer to that memory outside of this function
     struct dbheader_t *header = calloc(1, sizeof(struct dbheader_t));
@@ -115,11 +120,7 @@ int create_db_header(struct dbheader_t **headerOut) {
     header->magic = HEADER_MAGIC;
     header->filesize = sizeof(struct dbheader_t);
 
-    if (headerOut) {
-        *headerOut = header;
-    } else {
-        free(header);
-    }
+    *headerOut = header;
 
     return STATUS_SUCCESS;
 }
