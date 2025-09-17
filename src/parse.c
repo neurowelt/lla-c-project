@@ -40,7 +40,13 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) 
 
     write(fd, dbhdr, sizeof(struct dbheader_t));
 
-    return 0;
+    int i = 0;
+	for (; i < realcount; i++) {
+		employees[i].hours = htonl(employees[i].hours);
+		write(fd, &employees[i], sizeof(struct employee_t));
+	}
+
+    return STATUS_SUCCESS;
 }
 
 int validate_db_header(int fd, struct dbheader_t **headerOut) {
@@ -49,7 +55,7 @@ int validate_db_header(int fd, struct dbheader_t **headerOut) {
         return STATUS_ERROR;
     }
     struct dbheader_t *header = calloc(1, sizeof(struct dbheader_t));
-    if (header == -1) {
+    if (header == NULL) {
         printf("Malloc failed to create DB header\n");
         return STATUS_ERROR;
     }
@@ -66,14 +72,14 @@ int validate_db_header(int fd, struct dbheader_t **headerOut) {
     header->magic = ntohl(header->magic);
     header->filesize = ntohl(header->filesize);
 
-    if (header->version != 1) {
-        printf("Improper header version\n");
+    if (header->magic != HEADER_MAGIC) {
+        printf("Improper header magic\n");
         free(header);
         return STATUS_ERROR;
     }
 
-    if (header->magic != HEADER_MAGIC) {
-        printf("Improper header magic\n");
+    if (header->version != 1) {
+        printf("Improper header version\n");
         free(header);
         return STATUS_ERROR;
     }
@@ -95,7 +101,7 @@ int create_db_header(struct dbheader_t **headerOut) {
     // Ask the heap to allocate memory space for this structure
     // and return the pointer to that memory outside of this function
     struct dbheader_t *header = calloc(1, sizeof(struct dbheader_t));
-    if (header == -1) {
+    if (header == NULL) {
         printf("Malloc failed to create DB header\n");
         return STATUS_ERROR;
     }
