@@ -7,8 +7,8 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "../include/common.h"
-#include "../include/parse.h"
+#include "common.h"
+#include "parse.h"
 
 // void list_employees(struct dbheader_t *dbhdr, struct employee_t *employees) {
 // }
