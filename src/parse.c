@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <sys/_endian.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
@@ -26,14 +27,18 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) 
         printf("Bad file descriptor from the user\n");
         return STATUS_ERROR;
     }
+    if (dbhdr == NULL) {
+        printf("Header is empty\n");
+        return STATUS_ERROR;
+    }
 
     int realcount = dbhdr->count;
 
     // Pack back to network endian
     dbhdr->magic = htonl(dbhdr->magic);
-    dbhdr->version = htonl(dbhdr->version);
+    dbhdr->version = htons(dbhdr->version);
     dbhdr->filesize = htonl(sizeof(struct dbheader_t) + (sizeof(struct employee_t) * realcount));
-    dbhdr->count = htonl(dbhdr->count);
+    dbhdr->count = htons(dbhdr->count);
 
     // Bring cursor to the beginning of the file for proper closing
     lseek(fd, 0, SEEK_SET);
