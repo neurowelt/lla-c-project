@@ -27,10 +27,12 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) 
         return STATUS_ERROR;
     }
 
+    int realcount = dbhdr->count;
+
     // Pack back to network endian
     dbhdr->magic = htonl(dbhdr->magic);
     dbhdr->version = htonl(dbhdr->version);
-    dbhdr->filesize = htonl(dbhdr->filesize);
+    dbhdr->filesize = htonl(sizeof(struct dbheader_t) + (sizeof(struct employee_t) * realcount));
     dbhdr->count = htonl(dbhdr->count);
 
     // Bring cursor to the beginning of the file for proper closing
