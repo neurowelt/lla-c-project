@@ -35,7 +35,7 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) 
 
     // Pack back to network endian
     dbhdr->magic = htonl(dbhdr->magic);
-    dbhdr->filesize = htonl(sizeof(struct dbheader_t) + (sizeof(struct employee_t) * realcount));
+    dbhdr->filesize = htonl(sizeof(struct dbheader_t));
     dbhdr->count = htons(dbhdr->count);
     dbhdr->version = htons(dbhdr->version);
 
