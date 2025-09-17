@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <sys/_endian.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
